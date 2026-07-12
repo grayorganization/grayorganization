@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block heading %}Review queue{% endblock %}
+{% block nav_review %}active{% endblock %}
+{% block content %}
+
+{% if items %}
+<div class="hint" style="margin:0 4px 10px">The scanner wasn&rsquo;t sure about these. Confirm what&rsquo;s right, remove what&rsquo;s wrong.</div>
+{% for item in items %}
+<div class="card">
+  <div class="row" style="border:none;padding-bottom:4px">
+    <div class="grow">
+      <div class="name">{{ item.name }}</div>
+      <div class="meta">
+        {{ item.quantity|int if item.quantity == item.quantity|int else item.quantity }} {{ item.unit }}
+        &middot; {{ item.location or "no location" }}
+        &middot; {{ item.confidence }} confidence &middot; via {{ item.added_via.replace("_", " ") }}
+      </div>
+      {% if item.notes %}<div class="meta" style="margin-top:4px">&ldquo;{{ item.notes }}&rdquo;</div>{% endif %}
+    </div>
+  </div>
+  <div class="btn-pair">
+    <form class="inline" method="post" action="/items/{{ item.id }}/review" style="flex:1">
+      <input type="hidden" name="action" value="confirm">
+      <button class="btn small" type="submit" style="width:100%">&#10003; Looks right</button>
+    </form>
+    <form class="inline" method="post" action="/items/{{ item.id }}/review" style="flex:1">
+      <input type="hidden" name="action" value="remove">
+      <button class="btn small danger" type="submit" style="width:100%">&#10007; Remove</button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty">Review queue is empty &#9989;<br>Scanner output you haven&rsquo;t confirmed shows up here.</div>
+{% endif %}
+
+{% endblock %}

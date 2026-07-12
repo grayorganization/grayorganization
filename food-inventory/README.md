@@ -14,18 +14,39 @@ layer (native, web, or no-code) can sit on top.
 | `data/*.csv` | Seed data parsed from 4 cabinet photos + 1 H-E-B receipt (2026-07-12): 50 items, 13 receipt lines, lookups |
 | `scripts/build_db.py` | Seed CSVs + schema → `inventory.db` (idempotent, rebuild anytime) |
 | `prototypes/intake.py` | The parser: receipt / shelf photo / voice brain-dump → upserted into the db |
+| `app/` | **The web app** — mobile-first FastAPI UI over the db (see below) |
 
 ## Quick start
 
 ```bash
 cd food-inventory
+pip install -r requirements.txt
 python3 scripts/build_db.py          # → inventory.db with the real kitchen seeded
+uvicorn app.main:app                 # → http://localhost:8000
 
-# then feed it (needs: pip install anthropic + ANTHROPIC_API_KEY)
+# CLI intake also works standalone (needs ANTHROPIC_API_KEY):
 python3 prototypes/intake.py receipt receipt.jpg --db inventory.db
-python3 prototypes/intake.py shelf fridge.jpg --location fridge --db inventory.db
 python3 prototypes/intake.py voice "peanut butter's almost gone, we're out of eggs" --db inventory.db
 ```
+
+## The app
+
+Four screens, mobile-first, zero JS dependencies (server-rendered forms —
+nothing to break):
+
+- **Inventory** — everything on hand, grouped by location, searchable, with a
+  tap-to-set `plenty/low/out` segmented control per item and a manual-add form.
+- **Shopping** — generated live from status (`low`/`out`), one-tap "Bought"
+  restocks, plus the use-it-up list (expiring ≤ 7 days).
+- **Capture** — the brain-dump textarea (phone keyboard dictation) and a
+  photo upload (receipt or shelf, camera-capture enabled on mobile). Both go
+  through the same parser/upsert as the CLI. Needs `ANTHROPIC_API_KEY`;
+  everything else works without it.
+- **Review** — scanner output below high confidence waits here for a
+  "looks right" / "remove" decision. Badge counts in the tab bar.
+
+To use it from your phone on the same wifi:
+`uvicorn app.main:app --host 0.0.0.0` then open `http://<computer-ip>:8000`.
 
 ## The model in one paragraph
 

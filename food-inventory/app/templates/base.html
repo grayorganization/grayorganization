@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}Food Inventory{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>{% block heading %}Food Inventory{% endblock %}</h1>
+  </header>
+
+  <main>
+    {% if flash %}<div class="flash">{{ flash }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <nav class="tabbar">
+    <a href="/" class="{% block nav_inventory %}{% endblock %}">
+      <span class="icon">&#9776;</span>Inventory
+    </a>
+    <a href="/shopping" class="{% block nav_shopping %}{% endblock %}">
+      <span class="icon">&#128722;</span>Shopping
+      {% if counts.shopping %}<span class="badge">{{ counts.shopping }}</span>{% endif %}
+    </a>
+    <a href="/capture" class="{% block nav_capture %}{% endblock %}">
+      <span class="icon">&#10133;</span>Capture
+    </a>
+    <a href="/review" class="{% block nav_review %}{% endblock %}">
+      <span class="icon">&#128269;</span>Review
+      {% if counts.review %}<span class="badge">{{ counts.review }}</span>{% endif %}
+    </a>
+  </nav>
+</body>
+</html>

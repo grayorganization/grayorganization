@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block heading %}Shopping list{% endblock %}
+{% block nav_shopping %}active{% endblock %}
+{% block content %}
+
+{% if items %}
+<div class="card">
+  {% for item in items %}
+  <div class="row">
+    <div class="grow">
+      <div class="name">{{ item.name }}</div>
+      <div class="meta">{{ item.category or "" }}{% if item.brand %} &middot; {{ item.brand }}{% endif %}</div>
+    </div>
+    <span class="pill {{ item.status }}">{{ item.status }}</span>
+    <form class="inline" method="post" action="/items/{{ item.id }}/status">
+      <input type="hidden" name="status" value="plenty">
+      <input type="hidden" name="back" value="/shopping">
+      <button class="btn small secondary" type="submit">Bought</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty">Shopping list is clear &#127881;<br>Items marked <b>low</b> or <b>out</b> show up here.</div>
+{% endif %}
+
+{% if expiring %}
+<div class="section-title">Use it up (next 7 days)</div>
+<div class="card">
+  {% for item in expiring %}
+  <div class="row">
+    <div class="grow">
+      <div class="name">{{ item.name }}</div>
+      <div class="meta">{{ item.location or "" }} &middot; {{ item.expiration }} ({{ item.expiration_source }})</div>
+    </div>
+    <span class="pill {% if item.days_left < 2 %}out{% else %}low{% endif %}">
+      {% if item.days_left <= 0 %}today{% else %}{{ item.days_left }}d{% endif %}
+    </span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

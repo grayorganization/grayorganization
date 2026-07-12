@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block heading %}Inventory <span style="font-weight:400;color:var(--muted);font-size:14px">({{ counts["items"] }} items)</span>{% endblock %}
+{% block nav_inventory %}active{% endblock %}
+{% block content %}
+
+<form method="get" action="/" class="search">
+  <input type="search" name="q_" value="{{ q_ }}" placeholder="Search inventory&hellip;">
+</form>
+
+<details class="add-item" {% if flash %}{% endif %}>
+  <summary>+ Add item manually</summary>
+  <div class="card">
+    <form method="post" action="/items">
+      <label>Name</label>
+      <input type="text" name="name" required placeholder="e.g. Eggs">
+      <div class="form-grid">
+        <div>
+          <label>Category</label>
+          <select name="category">
+            {% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div>
+          <label>Location</label>
+          <select name="location">
+            {% for l in locations %}<option value="{{ l.id }}">{{ l.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div>
+          <label>Quantity</label>
+          <input type="number" name="quantity" value="1" step="0.1" min="0">
+        </div>
+        <div>
+          <label>Status</label>
+          <select name="status">
+            <option value="plenty">Plenty</option>
+            <option value="low">Low</option>
+            <option value="out">Out</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" type="submit">Add to inventory</button>
+    </form>
+  </div>
+</details>
+
+{% for group in groups %}
+  <div class="section-title">{{ group.location }}</div>
+  <div class="card">
+    {% for item in group["items"] %}
+    <div class="row">
+      <div class="grow">
+        <div class="name">{{ item.name }}{% if item.confidence != 'high' and not item.reviewed %}<span class="flag">unreviewed</span>{% endif %}</div>
+        <div class="meta">
+          {{ item.quantity|int if item.quantity == item.quantity|int else item.quantity }} {{ item.unit }}
+          {%- if item.brand %} &middot; {{ item.brand }}{% endif %}
+          {%- if item.expiration %} &middot; exp {{ item.expiration }}{% endif %}
+        </div>
+      </div>
+      <div class="status-group">
+        {% for s in ["plenty", "low", "out"] %}
+        <form class="inline" method="post" action="/items/{{ item.id }}/status">
+          <input type="hidden" name="status" value="{{ s }}">
+          <input type="hidden" name="back" value="/?q_={{ q_ }}">
+          <button type="submit" class="{% if item.status == s %}active-{{ s }}{% endif %}">{{ s }}</button>
+        </form>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty">Nothing here yet — add items or use Capture.</div>
+{% endfor %}
+
+{% endblock %}

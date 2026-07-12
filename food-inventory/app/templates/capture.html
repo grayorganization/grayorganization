@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block heading %}Capture{% endblock %}
+{% block nav_capture %}active{% endblock %}
+{% block content %}
+
+{% if error %}<div class="error">Intake failed &mdash; {{ error }}</div>{% endif %}
+
+{% if results %}
+<div class="flash">Parsed {{ results|length }} item{{ "s" if results|length != 1 }} from your {{ "brain dump" if mode == "voice" else mode }}.</div>
+<div class="card">
+  {% for r in results %}
+  <div class="row">
+    <div class="grow">
+      <div class="name">{{ r.item.name }}</div>
+      <div class="meta">{{ r.item.quantity }} {{ r.item.unit }} &middot; {{ r.item.status }}{% if r.item.confidence != 'high' %} &middot; needs review{% endif %}</div>
+    </div>
+    <span class="pill {{ r.outcome }}">{{ r.outcome }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="section-title">Brain dump</div>
+<div class="card">
+  <form method="post" action="/capture/voice">
+    <textarea name="transcript" required
+      placeholder="Tap the mic on your keyboard and just talk&hellip;&#10;&ldquo;three boxes of pasta, peanut butter&rsquo;s almost gone, we&rsquo;re out of eggs&rdquo;"></textarea>
+    <label>Default location for new items</label>
+    <select name="location">
+      {% for l in locations %}<option value="{{ l.id }}">{{ l.name }}</option>{% endfor %}
+    </select>
+    <button class="btn" type="submit">Parse &amp; add</button>
+    <div class="hint">&ldquo;almost gone&rdquo; &rarr; low &middot; &ldquo;we&rsquo;re out of&rdquo; &rarr; out (goes straight to the shopping list)</div>
+  </form>
+</div>
+
+<div class="section-title">Scan a photo</div>
+<div class="card">
+  <form method="post" action="/capture/photo" enctype="multipart/form-data">
+    <label>Photo (receipt, cabinet, or fridge)</label>
+    <input type="file" name="photo" accept="image/*" capture="environment" required>
+    <div class="form-grid">
+      <div>
+        <label>What is it?</label>
+        <select name="mode">
+          <option value="shelf">Cabinet / fridge shelf</option>
+          <option value="receipt">Grocery receipt</option>
+        </select>
+      </div>
+      <div>
+        <label>Location</label>
+        <select name="location">
+          {% for l in locations %}<option value="{{ l.id }}">{{ l.name }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <button class="btn" type="submit">Scan &amp; add</button>
+    <div class="hint">Receipts also record prices for price history.</div>
+  </form>
+</div>
+
+{% endblock %}
