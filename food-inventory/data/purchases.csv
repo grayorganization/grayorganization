@@ -12,3 +12,37 @@ p010,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,HEB GREEK 100 YOG VANILLA,H-E
 p011,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,HEB GREEK 100 YOG STRAW C,H-E-B Greek 100 Yogurt Strawberry,1,3.48,3.48,dairy,true
 p012,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,G ZERO LEMON LIME 8PK 200,Gatorade Zero Lemon Lime 8-pack 20oz,1,6.98,6.98,beverages,true
 p013,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,CHANGE FOR CHARITY,Change for Charity donation,1,0.92,0.92,,false
+p014,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,TAX 1.48,Sales Tax,1,1.48,1.48,,false
+p101,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,382324 Hawaiian Swt Rolls,Hawaiian Sweet Rolls,1,2.45,2.45,bread-bakery,true
+p102,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,595898 Iced Mini Donuts (x2),Iced Mini Donuts,2,3.95,7.90,bread-bakery,true
+p103,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,356685 Yellow Potatoes,Yellow Potatoes,1,4.19,4.19,produce,true
+p104,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,382245 Glazed Honey Buns,Glazed Honey Buns,1,2.39,2.39,bread-bakery,true
+p105,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,382786 CinnamonStrsCakes,Cinnamon Streusel Cakes,1,2.95,2.95,bread-bakery,true
+p106,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,443745 Donut Holes,Donut Holes,1,2.79,2.79,bread-bakery,true
+p107,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,506477 Cut Green Beans (x2),Green Beans,2,0.75,1.50,canned,true
+p108,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,709507 Pirate's Booty,Pirate's Booty,1,2.99,2.99,snacks,true
+p109,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,285769 Frozen Blueberries,Frozen Blueberries,1,3.79,3.79,frozen,true
+p110,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,552025 Fruit Snacks,Fruit Snacks,1,3.99,3.99,snacks,true
+p111,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,368161 Protein FT Sticks,Protein Fit Sticks,1,4.79,4.79,snacks,true
+p112,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,609655 Mini Chewy Crunchy,Mini Chewy Crunchy Granola Bars,1,3.99,3.99,snacks,true
+p113,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,348438 Cinnamon Grahams,Cinnamon Grahams,1,1.99,1.99,cereal,true
+p114,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,344213 Cheese Crackers,Cheese Crackers,1,3.79,3.79,snacks,true
+p115,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,297852 Fruit Rounds,Fruit Rounds,1,1.65,1.65,cereal,true
+p116,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,343704 Kids Krunch (x2),Kids Krunch,2,2.15,4.30,cereal,true
+p117,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,365387 Rice Cakes,Rice Cakes,1,3.15,3.15,snacks,true
+p118,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,596713 Protein Ramen (x6),Protein Ramen,6,1.49,8.94,pasta-grains,true
+p119,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,343827 Assorted Hummus,Assorted Hummus,1,2.59,2.59,condiments,true
+p120,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,399567 1lb Turkey Tub,Ground Turkey (1lb Tub),1,5.89,5.89,meat,true
+p121,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,683737 Built Bars,Built Bars,1,8.79,8.79,snacks,true
+p122,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,657942 Snickers or Twix,Snickers or Twix Bar,1,1.25,1.25,snacks,true
+p123,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,383760 Sparkling Frost (x4),Sparkling Water Frost,4,0.59,2.36,beverages,true
+p124,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,356483 Baby Carrots,Baby Carrots,1,1.29,1.29,produce,true
+p125,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,594330 Gourmet Snack Chz,Gourmet Snack Cheese,1,2.99,2.99,dairy,true
+p126,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,344821 Fresh Guacamole,Fresh Guacamole,1,2.99,2.99,produce,true
+p127,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,399434 Paprika,Paprika,1,0.99,0.99,baking,true
+p128,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,477210 Spreadable Wedge (x2),Spreadable Cheese Wedges,2,2.59,5.18,dairy,true
+p129,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,363249 Deli Sliced CoJack,Deli Sliced Colby Jack,1,1.49,1.49,dairy,true
+p130,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,366017 Butter/Lite Syrup,Butter/Lite Syrup,1,1.95,1.95,condiments,true
+p131,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,496924 Greek Seasonings,Greek Seasonings,1,1.99,1.99,baking,true
+p132,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,356545 Strawberries,Strawberries,1,2.19,2.19,produce,true
+p133,gray-austin,receipt-2026-07-12-aldi,ALDI,2026-07-12,C-Taxable @8.250% tax,Sales Tax,1,0.63,0.63,,false

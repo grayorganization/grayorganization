@@ -20,7 +20,7 @@ i018,gray-austin,Diced Tomatoes,Happy Harvest,canned,canned-cabinet,1,can,plenty
 i019,gray-austin,Baked Beans,Dakota's Pride,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
 i020,gray-austin,Tomato Paste,,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
 i021,gray-austin,Enchilada Sauce,,canned,canned-cabinet,2,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
-i022,gray-austin,Green Beans,,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,medium,photo-2026-07-12-canned,Open can visible — verify
+i022,gray-austin,Green Beans,,canned,canned-cabinet,3,can,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,Restocked +2 from ALDI receipt
 i023,gray-austin,Canned Peaches,,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,low,photo-2026-07-12-canned,Partially visible
 i024,gray-austin,Salsa Verde,,condiments,canned-cabinet,1,jar,plenty,,estimated,photo_scan,medium,photo-2026-07-12-canned,Green jar top shelf
 i025,gray-austin,Ashwagandha Gummies,youtheory,supplements,canned-cabinet,1,jar,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,180 gummies mixed berry
@@ -31,7 +31,7 @@ i029,gray-austin,Pistachios,,snacks,snack-cabinet,1,bag,plenty,,estimated,photo_
 i030,gray-austin,Smartfood White Cheddar Popcorn Minis,Smartfood,snacks,snack-cabinet,1,bag,plenty,,estimated,photo_scan,high,photo-2026-07-12-snacks,80-cal multipack
 i031,gray-austin,Cheetos,Cheetos,snacks,snack-cabinet,1,bag,low,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Crumpled bag — mostly gone
 i032,gray-austin,Graham Crackers,,snacks,snack-cabinet,1,box,plenty,,estimated,photo_scan,medium,photo-2026-07-12-snacks,
-i033,gray-austin,Rice Cakes,,snacks,snack-cabinet,2,count,plenty,,estimated,photo_scan,low,photo-2026-07-12-snacks,Orange packs — verify
+i033,gray-austin,Rice Cakes,,snacks,snack-cabinet,3,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,Restocked +1 from ALDI receipt
 i034,gray-austin,Spaghetti,,pasta-grains,snack-cabinet,1,bag,plenty,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Italian-flag packaging
 i035,gray-austin,Salsa (Mild),,condiments,snack-cabinet,1,jar,plenty,,estimated,photo_scan,high,photo-2026-07-12-snacks,
 i036,gray-austin,Bread Loaf,,bread-bakery,snack-cabinet,1,bag,plenty,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Brown bakery bag tied shut
@@ -49,3 +49,33 @@ i047,gray-austin,Boneless Skinless Chicken Breast,H-E-B,meat,fridge,1,count,plen
 i048,gray-austin,Greek 100 Yogurt Vanilla,H-E-B,dairy,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
 i049,gray-austin,Greek 100 Yogurt Strawberry,H-E-B,dairy,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
 i050,gray-austin,Gatorade Zero Lemon Lime 8-pack,Gatorade,beverages,pantry-cabinet,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,20 oz bottles — confirm location
+i051,gray-austin,Hawaiian Sweet Rolls,L'oven Fresh,bread-bakery,snack-cabinet,1,bag,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i052,gray-austin,Iced Mini Donuts,,bread-bakery,snack-cabinet,2,bag,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i053,gray-austin,Yellow Potatoes,,produce,pantry-cabinet,1,bag,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i054,gray-austin,Glazed Honey Buns,,bread-bakery,snack-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i055,gray-austin,Cinnamon Streusel Cakes,,bread-bakery,snack-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i056,gray-austin,Donut Holes,,bread-bakery,snack-cabinet,1,bag,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i057,gray-austin,Pirate's Booty,Pirate's Booty,snacks,snack-cabinet,1,bag,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i058,gray-austin,Frozen Blueberries,,frozen,freezer,1,bag,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i059,gray-austin,Fruit Snacks,,snacks,snack-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i060,gray-austin,Protein Fit Sticks,,snacks,pantry-cabinet,1,box,plenty,,estimated,receipt_scan,medium,receipt-2026-07-12-aldi,Raw: 'Protein FT Sticks' — abbreviation ambiguous
+i061,gray-austin,Mini Chewy Crunchy Granola Bars,,snacks,snack-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i062,gray-austin,Cinnamon Grahams,,cereal,pantry-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i063,gray-austin,Cheese Crackers,,snacks,snack-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i064,gray-austin,Fruit Rounds,,cereal,pantry-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i065,gray-austin,Kids Krunch,,cereal,pantry-cabinet,2,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i066,gray-austin,Protein Ramen,,pasta-grains,pantry-cabinet,6,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i067,gray-austin,Assorted Hummus,,condiments,fridge,1,count,plenty,2026-08-01,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i068,gray-austin,Ground Turkey (1lb Tub),,meat,fridge,1,lb,plenty,2026-07-17,estimated,receipt_scan,high,receipt-2026-07-12-aldi,Freeze if not cooking this week
+i069,gray-austin,Built Bars,Built,snacks,pantry-cabinet,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i070,gray-austin,Snickers or Twix Bar,,snacks,snack-cabinet,1,count,plenty,,estimated,receipt_scan,medium,receipt-2026-07-12-aldi,Receipt says 'Snickers or Twix' — which one?
+i071,gray-austin,Sparkling Water Frost,,beverages,fridge,4,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i072,gray-austin,Baby Carrots,,produce,fridge,1,bag,plenty,2026-08-09,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i073,gray-austin,Gourmet Snack Cheese,,dairy,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i074,gray-austin,Fresh Guacamole,,produce,fridge,1,count,plenty,2026-07-17,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i075,gray-austin,Paprika,,baking,pantry-cabinet,1,jar,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i076,gray-austin,Spreadable Cheese Wedges,,dairy,fridge,2,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i077,gray-austin,Deli Sliced Colby Jack,,dairy,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i078,gray-austin,Butter/Lite Syrup,,condiments,pantry-cabinet,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i079,gray-austin,Greek Seasonings,,baking,pantry-cabinet,1,jar,plenty,,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
+i080,gray-austin,Strawberries,,produce,fridge,1,count,plenty,2026-07-19,estimated,receipt_scan,high,receipt-2026-07-12-aldi,
