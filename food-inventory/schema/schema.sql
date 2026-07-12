@@ -141,3 +141,39 @@ SELECT i.id AS item_id, p.name, i.confidence, i.added_via, i.source_ref, i.notes
 FROM items i
 JOIN products p ON p.id = i.product_id
 WHERE i.reviewed = 0 AND i.confidence != 'high';
+
+-- ---------------------------------------------------------------------------
+-- Recipes (Phase 4): "what can I make with what's on hand"
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE recipes (
+    id            TEXT PRIMARY KEY,
+    household_id  TEXT NOT NULL REFERENCES households(id),
+    name          TEXT NOT NULL,
+    description   TEXT
+);
+
+-- Ingredients match inventory by LIKE pattern against product names —
+-- deliberately loose ("%chicken breast%" matches any brand's chicken breast).
+CREATE TABLE recipe_ingredients (
+    id             TEXT PRIMARY KEY,
+    recipe_id      TEXT NOT NULL REFERENCES recipes(id),
+    ingredient     TEXT NOT NULL,     -- display name ("Tortillas")
+    match_pattern  TEXT NOT NULL,     -- LIKE pattern ("%tortilla%")
+    optional       INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_recipe_ingredients_recipe ON recipe_ingredients(recipe_id);
+
+-- Per-ingredient availability: on_hand = a matching item exists that isn't 'out'.
+CREATE VIEW recipe_ingredient_status AS
+SELECT r.household_id, r.id AS recipe_id, r.name AS recipe, ri.ingredient,
+       ri.optional,
+       EXISTS (
+           SELECT 1 FROM items i
+           JOIN products p ON p.id = i.product_id
+           WHERE i.household_id = r.household_id
+             AND i.status != 'out'
+             AND p.name LIKE ri.match_pattern
+       ) AS on_hand
+FROM recipes r
+JOIN recipe_ingredients ri ON ri.recipe_id = r.id;

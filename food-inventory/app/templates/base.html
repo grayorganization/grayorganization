@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2e7d5b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
   <title>{% block title %}Food Inventory{% endblock %}</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
@@ -26,6 +31,9 @@
     </a>
     <a href="/capture" class="{% block nav_capture %}{% endblock %}">
       <span class="icon">&#10133;</span>Capture
+    </a>
+    <a href="/cook" class="{% block nav_cook %}{% endblock %}">
+      <span class="icon">&#127859;</span>Cook
     </a>
     <a href="/review" class="{% block nav_review %}{% endblock %}">
       <span class="icon">&#128269;</span>Review

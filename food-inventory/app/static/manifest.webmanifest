@@ -1,0 +1,11 @@
+{
+  "name": "Food Inventory",
+  "short_name": "Pantry",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f5f1",
+  "theme_color": "#2e7d5b",
+  "icons": [
+    { "src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

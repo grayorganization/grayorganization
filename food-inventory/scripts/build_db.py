@@ -26,9 +26,16 @@ def read(name: str) -> list[dict]:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=ROOT / "inventory.db")
+    ap.add_argument("--if-missing", action="store_true",
+                    help="Do nothing when the db already exists (deploy-time seeding)")
     args = ap.parse_args()
 
+    if args.if_missing and args.out.exists():
+        print(f"{args.out} already exists — leaving it alone")
+        return
+
     args.out.unlink(missing_ok=True)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(args.out)
     db.executescript((ROOT / "schema" / "schema.sql").read_text())
 
@@ -93,9 +100,22 @@ def main():
              float(row["line_total"]), row["is_inventory"] == "true"),
         )
 
+    for r in read("recipes"):
+        db.execute(
+            "INSERT INTO recipes (id, household_id, name, description) VALUES (?, ?, ?, ?)",
+            (r["recipe_id"], HOUSEHOLD_ID, r["name"], r["description"]),
+        )
+    for ri in read("recipe_ingredients"):
+        db.execute(
+            "INSERT INTO recipe_ingredients (id, recipe_id, ingredient, match_pattern, optional)"
+            " VALUES (?, ?, ?, ?, ?)",
+            (ri["id"], ri["recipe_id"], ri["ingredient"], ri["match_pattern"],
+             ri["optional"] == "1"),
+        )
+
     db.commit()
     counts = {t: db.execute(f"SELECT count(*) FROM {t}").fetchone()[0]
-              for t in ("products", "items", "receipts", "receipt_lines")}
+              for t in ("products", "items", "receipts", "receipt_lines", "recipes")}
     db.close()
     print(f"Built {args.out}: " + ", ".join(f"{v} {k}" for k, v in counts.items()))
 

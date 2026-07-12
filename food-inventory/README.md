@@ -42,11 +42,39 @@ nothing to break):
   photo upload (receipt or shelf, camera-capture enabled on mobile). Both go
   through the same parser/upsert as the CLI. Needs `ANTHROPIC_API_KEY`;
   everything else works without it.
+- **Cook** — recipes ranked by what's on hand right now ("can make" vs
+  "N missing"); missing ingredients are one tap from the shopping list.
+  Ingredient↔inventory matching is by LIKE pattern against product names.
 - **Review** — scanner output below high confidence waits here for a
   "looks right" / "remove" decision. Badge counts in the tab bar.
 
-To use it from your phone on the same wifi:
-`uvicorn app.main:app --host 0.0.0.0` then open `http://<computer-ip>:8000`.
+**Auto-restock:** receipt scans are *additive* — a purchased item that already
+exists anywhere in inventory gets its quantity bumped and its status snapped
+back to `plenty`, taking it off the shopping list automatically. Verified:
+rotini at 1/low + a receipt with 2 more → 3/plenty.
+
+The app is a PWA (manifest + icon): open it on your phone and
+"Add to Home Screen" for a full-screen app with its own icon.
+
+## Getting it off the laptop
+
+Same-wifi quick version: `uvicorn app.main:app --host 0.0.0.0`, open
+`http://<computer-ip>:8000` on your phone.
+
+Proper version — Fly.io (Dockerfile + fly.toml included; SQLite lives on a
+1GB volume so deploys don't wipe inventory; ~$0-2/mo at this size):
+
+```bash
+cd food-inventory
+fly launch --no-deploy               # keep the existing fly.toml when asked
+fly volumes create data --size 1
+fly secrets set APP_PASSWORD=<pick-one> ANTHROPIC_API_KEY=<your-key>
+fly deploy
+```
+
+`APP_PASSWORD` gates the whole app behind HTTP Basic (any username) — set it
+on anything internet-facing, since Capture spends your API key. Railway/Render
+work the same way via the Dockerfile (`DB_PATH` env points at their volume).
 
 ## The model in one paragraph
 

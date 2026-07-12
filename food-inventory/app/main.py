@@ -10,12 +10,15 @@ parser as the CLI prototype — set ANTHROPIC_API_KEY to enable it; the rest of
 the app works without it.
 """
 
+import base64
+import os
+import secrets
 import sys
 import tempfile
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -26,6 +29,27 @@ import intake  # noqa: E402  (the shared parser + upsert rules)
 from . import db as q  # noqa: E402
 
 app = FastAPI(title="Food Inventory")
+
+# Set APP_PASSWORD when deploying anywhere public — gates the whole app
+# behind HTTP Basic (username: anything, e.g. "gray"). Off for local use.
+APP_PASSWORD = os.environ.get("APP_PASSWORD")
+
+
+@app.middleware("http")
+async def basic_auth(request: Request, call_next):
+    if APP_PASSWORD:
+        header = request.headers.get("authorization", "")
+        ok = False
+        if header.startswith("Basic "):
+            try:
+                _, _, password = base64.b64decode(header[6:]).decode().partition(":")
+                ok = secrets.compare_digest(password, APP_PASSWORD)
+            except Exception:
+                ok = False
+        if not ok:
+            return Response(status_code=401,
+                            headers={"WWW-Authenticate": 'Basic realm="inventory"'})
+    return await call_next(request)
 app.mount("/static", StaticFiles(directory=ROOT / "app" / "static"), name="static")
 templates = Jinja2Templates(directory=ROOT / "app" / "templates")
 
@@ -140,7 +164,8 @@ def _run_intake(request: Request, *, mode: str, location: str,
         results = []
         for item in items:
             outcome = intake.upsert_item(db, item, location=location,
-                                         added_via=added_via, source_ref=source_ref)
+                                         added_via=added_via, source_ref=source_ref,
+                                         restock=(mode == "receipt"))
             results.append({"item": item, "outcome": outcome})
         if receipt:
             _record_receipt(db, receipt)
@@ -177,3 +202,26 @@ def review(request: Request):
     with q.connect() as db:
         items = q.review_queue(db)
     return render(request, "review.html", items=items)
+
+
+@app.get("/cook")
+def cook(request: Request, flash: str = ""):
+    with q.connect() as db:
+        recipes = q.recipes_ranked(db)
+    return render(request, "cook.html", recipes=recipes, flash=flash)
+
+
+@app.post("/cook/need")
+def cook_need(ingredient: str = Form(...), category: str = Form("canned")):
+    """Put a missing ingredient on the shopping list (item with status 'out')."""
+    item = {"name": ingredient.strip(), "brand": None, "category": category,
+            "quantity": 0, "unit": "count", "status": "out",
+            "expiration": None, "expiration_source": "unknown",
+            "confidence": "high", "notes": "added from recipe"}
+    with q.connect() as db:
+        intake.upsert_item(db, item, location=None, added_via="manual",
+                           source_ref="app-recipe")
+        db.commit()
+    return RedirectResponse(
+        f"/cook?flash={ingredient.strip().replace(' ', '+')}+added+to+shopping+list",
+        status_code=303)

@@ -1,0 +1,24 @@
+id,recipe_id,ingredient,match_pattern,optional
+ri01,r01,Chicken breast,%chicken breast%,0
+ri02,r01,Enchilada sauce,%enchilada sauce%,0
+ri03,r01,Tortillas,%tortillas%,0
+ri04,r01,Shredded cheese,%shredded cheese%,0
+ri05,r01,Salsa verde,%salsa verde%,1
+ri06,r02,Sirloin steak,%sirloin%,0
+ri07,r02,Green beans,%green beans%,0
+ri08,r02,Potatoes,%potato%,1
+ri09,r03,Rotini,%rotini%,0
+ri10,r03,Pasta sauce,%pasta sauce%,0
+ri11,r03,Parmesan,%parmesan%,1
+ri12,r04,Mac & cheese box,%gouda%,0
+ri13,r04,Milk or soymilk,%milk%,0
+ri14,r04,Broccoli,%broccoli%,1
+ri15,r05,Beef ramen,%ramen%,0
+ri16,r05,Eggs,%eggs%,0
+ri17,r05,Green onions,%green onion%,1
+ri18,r06,Greek yogurt,%yogurt%,0
+ri19,r06,Honey,%honey%,0
+ri20,r06,Granola,%granola%,0
+ri21,r07,Frozen wontons,%wonton%,0
+ri22,r07,Chicken broth,%broth%,0
+ri23,r07,Green onions,%green onion%,1

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block heading %}What can I make?{% endblock %}
+{% block nav_cook %}active{% endblock %}
+{% block content %}
+
+{% for r in recipes %}
+<div class="card">
+  <div class="row" style="border:none;padding-bottom:2px">
+    <div class="grow">
+      <div class="name">{{ r.name }}</div>
+      <div class="meta">{{ r.description }}</div>
+    </div>
+    {% if r.makeable %}
+      <span class="pill updated">can make</span>
+    {% else %}
+      <span class="pill low">{{ r.missing|length }} missing</span>
+    {% endif %}
+  </div>
+  <div class="meta" style="padding:2px 4px 6px">
+    have: {{ r.have|join(", ") if r.have else "&mdash;" }}
+    {%- if r.optional_missing %} &middot; optional: {{ r.optional_missing|join(", ") }}{% endif %}
+  </div>
+  {% if r.missing %}
+  <div class="need-list">
+    {% for ing in r.missing %}
+    <form class="inline" method="post" action="/cook/need">
+      <input type="hidden" name="ingredient" value="{{ ing }}">
+      <button class="btn small secondary" type="submit">+ {{ ing }}</button>
+    </form>
+    {% endfor %}
+    <span class="hint" style="align-self:center">tap to add to shopping list</span>
+  </div>
+  {% endif %}
+</div>
+{% else %}
+<div class="empty">No recipes yet.</div>
+{% endfor %}
+
+{% endblock %}

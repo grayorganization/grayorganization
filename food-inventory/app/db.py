@@ -1,9 +1,11 @@
 """Query layer over inventory.db — every function takes a connection."""
 
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "inventory.db"
+DB_PATH = Path(os.environ.get("DB_PATH",
+                              Path(__file__).resolve().parent.parent / "inventory.db"))
 HOUSEHOLD_ID = "gray-austin"
 
 
@@ -94,6 +96,37 @@ def counts(db) -> dict:
         "review": one("SELECT count(*) FROM items WHERE reviewed = 0 AND confidence != 'high'"),
         "items": one("SELECT count(*) FROM items WHERE status != 'out'"),
     }
+
+
+def recipes_ranked(db) -> list[dict]:
+    """Recipes with per-ingredient availability, ranked by fewest missing
+    required ingredients (i.e. 'what can I make right now' first)."""
+    rows = db.execute(
+        """SELECT rs.recipe_id, rs.recipe, r.description, rs.ingredient,
+                  rs.optional, rs.on_hand
+           FROM recipe_ingredient_status rs
+           JOIN recipes r ON r.id = rs.recipe_id
+           WHERE rs.household_id = ?
+           ORDER BY rs.recipe_id, rs.optional, rs.ingredient""",
+        (HOUSEHOLD_ID,),
+    ).fetchall()
+    by_recipe: dict[str, dict] = {}
+    for r in rows:
+        rec = by_recipe.setdefault(r["recipe_id"], {
+            "id": r["recipe_id"], "name": r["recipe"], "description": r["description"],
+            "have": [], "missing": [], "optional_missing": [],
+        })
+        if r["on_hand"]:
+            rec["have"].append(r["ingredient"])
+        elif r["optional"]:
+            rec["optional_missing"].append(r["ingredient"])
+        else:
+            rec["missing"].append(r["ingredient"])
+    ranked = sorted(by_recipe.values(),
+                    key=lambda r: (len(r["missing"]), -len(r["have"])))
+    for rec in ranked:
+        rec["makeable"] = not rec["missing"]
+    return ranked
 
 
 def set_status(db, item_id: str, status: str):

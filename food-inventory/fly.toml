@@ -1,0 +1,32 @@
+# Fly.io config — deploy from the food-inventory directory:
+#
+#   fly launch --no-deploy          # creates the app, keep this file when asked
+#   fly volumes create data --size 1
+#   fly secrets set APP_PASSWORD=<pick-one> ANTHROPIC_API_KEY=<your-key>
+#   fly deploy
+#
+# Then open https://<app-name>.fly.dev on your phone and Add to Home Screen.
+
+app = "gray-food-inventory"
+primary_region = "dfw"
+
+[build]
+
+[env]
+  DB_PATH = "/data/inventory.db"
+  PORT = "8000"
+
+[mounts]
+  source = "data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

@@ -198,9 +198,12 @@ def _uid(prefix: str) -> str:
 
 
 def upsert_item(db: sqlite3.Connection, item: dict, *, location: str,
-                added_via: str, source_ref: str) -> str:
+                added_via: str, source_ref: str, restock: bool = False) -> str:
     """The merge rule from schema.md: one product per (household, name);
-    one item per (product, location). Returns 'inserted' or 'updated'."""
+    one item per (product, location). Returns 'inserted', 'updated', or
+    'restocked'. restock=True (receipt scans) means the purchase is *additive*:
+    quantity is added to what's on hand and status snaps back to 'plenty' —
+    buying something again takes it off the shopping list automatically."""
     row = db.execute(
         "SELECT id FROM products WHERE household_id = ? AND name = ? COLLATE NOCASE",
         (FAMILY_ID, item["name"]),
@@ -215,6 +218,22 @@ def upsert_item(db: sqlite3.Connection, item: dict, *, location: str,
             (product_id, FAMILY_ID, item["name"], item.get("brand"),
              item["category"], item.get("unit", "count")),
         )
+
+    if restock:
+        # Receipt path: match the product in ANY location (you restock the thing,
+        # not the shelf), add quantity, and clear low/out status.
+        existing = db.execute(
+            "SELECT id FROM items WHERE product_id = ? ORDER BY updated_at DESC LIMIT 1",
+            (product_id,),
+        ).fetchone()
+        if existing:
+            db.execute(
+                "UPDATE items SET quantity = quantity + ?, status = 'plenty',"
+                " added_via = ?, source_ref = ?, updated_at = datetime('now')"
+                " WHERE id = ?",
+                (item["quantity"], added_via, source_ref, existing[0]),
+            )
+            return "restocked"
 
     existing = db.execute(
         "SELECT id FROM items WHERE product_id = ? AND location_id IS ?",
@@ -247,10 +266,10 @@ def write_db(db_path: Path, items: list[dict], *, location: str, added_via: str,
              source_ref: str, receipt: dict | None = None):
     db = sqlite3.connect(db_path)
     db.execute("PRAGMA foreign_keys = ON")
-    stats = {"inserted": 0, "updated": 0}
+    stats = {"inserted": 0, "updated": 0, "restocked": 0}
     for item in items:
         stats[upsert_item(db, item, location=location, added_via=added_via,
-                          source_ref=source_ref)] += 1
+                          source_ref=source_ref, restock=receipt is not None)] += 1
     if receipt:
         receipt_id = _uid("r")
         db.execute(
@@ -274,7 +293,8 @@ def write_db(db_path: Path, items: list[dict], *, location: str, added_via: str,
             )
     db.commit()
     db.close()
-    print(f"\n{db_path}: {stats['inserted']} items inserted, {stats['updated']} updated"
+    print(f"\n{db_path}: {stats['inserted']} inserted, {stats['updated']} updated, "
+          f"{stats['restocked']} restocked"
           + (", 1 receipt recorded" if receipt else ""), file=sys.stderr)
 
 
