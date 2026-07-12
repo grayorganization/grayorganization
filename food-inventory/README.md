@@ -1,87 +1,67 @@
-# Food Inventory — Starting Bones
+# Food Inventory — The Bones
 
-Bootstrap package for the food + toiletries inventory app (co-led with
-Lindsey; see `wiki/projects/food-inventory` in the obsidian-wiki). This is
-Phase 1 material: the data model, a real seed inventory extracted from photos
-of the actual kitchen, and a working parser prototype for the scanning lane.
+Full data model + working pipeline for the food & toiletries inventory app
+(see `wiki/projects/food-inventory` in the obsidian-wiki). Platform-agnostic:
+SQLite now, Postgres/Supabase when there's an app in front of it, and any UI
+layer (native, web, or no-code) can sit on top.
 
 ## What's here
 
 | Path | What it is |
 |---|---|
-| `schema/schema.md` | Data model: Item, PurchaseEvent, Location, Category — designed for Glide tables, multi-household from day one |
-| `data/items.csv` | **50 seed inventory rows** parsed from 4 cabinet photos + 1 H-E-B receipt (2026-07-12) — importable straight into a Glide table |
-| `data/purchases.csv` | The H-E-B receipt as PurchaseEvent rows (13 lines, $132.00 total) |
-| `data/locations.csv` | Location lookup seeded from the actual kitchen |
-| `data/categories.csv` | Category lookup with rough default shelf-life values (drives estimated expirations) |
-| `prototypes/intake.py` | The scanning/parsing prototype — receipt, shelf photo, and voice dictation all through one parser |
+| `schema/schema.sql` | **The canonical model** — 6 tables + 4 views, SQLite dialect, ports to Postgres unchanged |
+| `schema/schema.md` | The design doc: why products/items are split, field notes, portability |
+| `data/*.csv` | Seed data parsed from 4 cabinet photos + 1 H-E-B receipt (2026-07-12): 50 items, 13 receipt lines, lookups |
+| `scripts/build_db.py` | Seed CSVs + schema → `inventory.db` (idempotent, rebuild anytime) |
+| `prototypes/intake.py` | The parser: receipt / shelf photo / voice brain-dump → upserted into the db |
 
-## The core design decision
-
-**Every input path produces the same Item shape.** Receipt scan, cabinet
-photo, voice brain-dump, and manual entry all converge on one row format with
-`added_via` / `confidence` / `source_ref` fields preserving provenance. The
-app displays one inventory list and never cares how a row got there — and
-low-confidence rows go to a review queue instead of being silently trusted.
-
-## Input paths
-
-1. **Manual entry** — a Glide form writing directly to the Items table. No
-   code needed; Lindsey's lane.
-2. **Receipt scan** — `python intake.py receipt photo.jpg`. Vision model reads
-   the receipt directly (no separate OCR step — the earlier Tesseract→LLM plan
-   collapses to one call), expands store abbreviations, splits multi-quantity
-   lines, flags non-inventory lines like donations.
-3. **Shelf/fridge photo** — `python intake.py shelf photo.jpg --location fridge`.
-   Full auto-detection is Phase 3 in the roadmap, but as a manual "audit my
-   cabinet" action it works today and seeded most of `items.csv`.
-4. **Voice brain-dump** — `python intake.py voice "three boxes of pasta, peanut
-   butter's almost gone, we're out of eggs"`. See below.
-
-## Voice dictation (the low-friction path)
-
-The v1 trick: **don't build audio infrastructure.** Glide gives you a text
-field; the phone's native keyboard dictation turns speech into text for free.
-So the flow is: Brain-dump button → user talks into the mic key → transcript
-hits the same parser as photos → items land in a review list with statuses
-already mapped ("almost gone" → `low`, "we're out of" → `out`, which is
-exactly what the shopping list is generated from).
-
-v2 can swap in recorded audio + server transcription without changing
-anything downstream.
-
-## Running the prototype
+## Quick start
 
 ```bash
-pip install anthropic
-export ANTHROPIC_API_KEY=...
+cd food-inventory
+python3 scripts/build_db.py          # → inventory.db with the real kitchen seeded
 
-python prototypes/intake.py receipt receipt.jpg
-python prototypes/intake.py shelf pantry.jpg --location pantry-cabinet
-python prototypes/intake.py voice "two cans of enchilada sauce, out of eggs"
-
-# Append parsed rows to the seed CSV for Glide import:
-python prototypes/intake.py shelf fridge.jpg --location fridge --csv data/items.csv
+# then feed it (needs: pip install anthropic + ANTHROPIC_API_KEY)
+python3 prototypes/intake.py receipt receipt.jpg --db inventory.db
+python3 prototypes/intake.py shelf fridge.jpg --location fridge --db inventory.db
+python3 prototypes/intake.py voice "peanut butter's almost gone, we're out of eggs" --db inventory.db
 ```
 
-Wiring into Glide later: wrap `intake.py` behind a small HTTP endpoint
-(Cloud Run / Lambda), call it from a Glide workflow with the photo URL or
-transcript, write the returned rows into the Items table.
+## The model in one paragraph
 
-## Why this solves the actual problem
+**Products** are kinds of things ("Barilla Rotini" — what barcodes, prices,
+and recipes key against); **items** are stock on hand (that product, in a
+location, with a quantity and a `plenty/low/out` status). **Receipts +
+receipt_lines** are purchase history linked back to products. **Households**
+tag every row so multi-family is a WHERE clause, not a rebuild. Four views do
+the actual job: `shopping_list` (status ≠ plenty), `expiring_soon`,
+`price_history`, and `review_queue` (scanner guesses awaiting a human).
+Full rationale in `schema/schema.md`.
 
-Grocery shopping and meal planning fail when you don't trust the list. With
-`status` + `expiration` populated, three views fall out for free:
+## Input paths — all converging on one upsert
 
-- **Shopping list** = items where `status != plenty`
-- **Use it up** = items expiring in the next N days
-- **What can I make** = recipe matching against on-hand items (Phase 4 — the
-  data model already supports it)
+1. **Manual** — app form, writes products/items directly.
+2. **Receipt scan** — vision model reads the photo in one call (no OCR step),
+   expands abbreviations, records the receipt + lines, restocks items.
+3. **Shelf/fridge photo** — itemizes a cabinet; how the seed data was made.
+4. **Voice brain-dump** — phone-native dictation → transcript → same parser.
+   "Almost gone" → `low`, "we're out of" → `out`; the shopping list updates
+   in real time as you talk. No audio infrastructure in v1 — the OS keyboard
+   does speech-to-text.
 
-## Known gaps (deliberately)
+Merge rules live in one place (`intake.py:upsert_item`): product matched by
+case-insensitive name per household, item matched by product + location,
+update-in-place otherwise insert. Verified working end-to-end against the
+seeded db.
 
-- Dedup is naive name-matching (documented in schema.md) — fine for v1.
-- Seed rows marked `confidence: low` need a quick human pass (7 of 50).
-- Barcode + expiration-date scanning (Phase 2) not started.
-- This repo isn't the app repo — when ready, this folder's contents move to
-  `gray-labs-app/food-inventory`.
+## Status / known gaps
+
+- Seed rows with `confidence: low|medium` sit in `review_queue` (18 rows)
+  until confirmed — that's by design.
+- Product matching is exact-name (post-LLM-normalization); fuzzy matching
+  deferred.
+- Barcode + label-date scanning (Phase 2) not started; `products.barcode`
+  is already there for it.
+- Recipe matching (Phase 4) needs only new recipe tables — `items` is ready.
+- No app layer yet. Next candidates: a tiny FastAPI + HTMX front end over
+  the SQLite file, or Supabase + a mobile shell — schema works for either.

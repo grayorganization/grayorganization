@@ -8,10 +8,10 @@
 
 Every mode returns the same Item JSON (matching schema/schema.md), so the app
 layer never cares whether a row came from a receipt, a cabinet photo, or a
-voice brain-dump. Receipt mode additionally returns PurchaseEvent rows.
+voice brain-dump. Receipt mode additionally returns receipt/line rows.
 
 Requires: pip install anthropic  +  ANTHROPIC_API_KEY set.
-Add --csv to append items to data/items.csv for Glide import.
+Sinks: --db inventory.db (upsert with merge rules)  or  --csv data/items.csv.
 """
 
 import argparse
@@ -19,7 +19,9 @@ import base64
 import csv
 import json
 import mimetypes
+import sqlite3
 import sys
+import uuid
 from pathlib import Path
 
 import anthropic
@@ -191,6 +193,91 @@ def append_items_csv(items: list[dict], csv_path: Path, added_via: str, location
             next_id += 1
 
 
+def _uid(prefix: str) -> str:
+    return f"{prefix}_{uuid.uuid4().hex[:10]}"
+
+
+def upsert_item(db: sqlite3.Connection, item: dict, *, location: str,
+                added_via: str, source_ref: str) -> str:
+    """The merge rule from schema.md: one product per (household, name);
+    one item per (product, location). Returns 'inserted' or 'updated'."""
+    row = db.execute(
+        "SELECT id FROM products WHERE household_id = ? AND name = ? COLLATE NOCASE",
+        (FAMILY_ID, item["name"]),
+    ).fetchone()
+    if row:
+        product_id = row[0]
+    else:
+        product_id = _uid("p")
+        db.execute(
+            "INSERT INTO products (id, household_id, name, brand, category_id, default_unit)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            (product_id, FAMILY_ID, item["name"], item.get("brand"),
+             item["category"], item.get("unit", "count")),
+        )
+
+    existing = db.execute(
+        "SELECT id FROM items WHERE product_id = ? AND location_id IS ?",
+        (product_id, location),
+    ).fetchone()
+    if existing:
+        db.execute(
+            "UPDATE items SET quantity = ?, unit = ?, status = ?,"
+            " expiration = COALESCE(?, expiration), expiration_source = ?,"
+            " added_via = ?, confidence = ?, source_ref = ?, notes = ?,"
+            " reviewed = 0, updated_at = datetime('now') WHERE id = ?",
+            (item["quantity"], item.get("unit", "count"), item["status"],
+             item.get("expiration"), item.get("expiration_source", "estimated"),
+             added_via, item["confidence"], source_ref, item.get("notes"), existing[0]),
+        )
+        return "updated"
+    db.execute(
+        "INSERT INTO items (id, household_id, product_id, location_id, quantity, unit,"
+        " status, expiration, expiration_source, added_via, confidence, source_ref, notes)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (_uid("i"), FAMILY_ID, product_id, location, item["quantity"],
+         item.get("unit", "count"), item["status"], item.get("expiration"),
+         item.get("expiration_source", "estimated"), added_via,
+         item["confidence"], source_ref, item.get("notes")),
+    )
+    return "inserted"
+
+
+def write_db(db_path: Path, items: list[dict], *, location: str, added_via: str,
+             source_ref: str, receipt: dict | None = None):
+    db = sqlite3.connect(db_path)
+    db.execute("PRAGMA foreign_keys = ON")
+    stats = {"inserted": 0, "updated": 0}
+    for item in items:
+        stats[upsert_item(db, item, location=location, added_via=added_via,
+                          source_ref=source_ref)] += 1
+    if receipt:
+        receipt_id = _uid("r")
+        db.execute(
+            "INSERT INTO receipts (id, household_id, store, purchase_date, total)"
+            " VALUES (?, ?, ?, ?, ?)",
+            (receipt_id, FAMILY_ID, receipt.get("store"),
+             receipt.get("purchase_date"), receipt.get("total")),
+        )
+        for li in receipt["line_items"]:
+            product = db.execute(
+                "SELECT id FROM products WHERE household_id = ? AND name = ? COLLATE NOCASE",
+                (FAMILY_ID, li["name"]),
+            ).fetchone()
+            db.execute(
+                "INSERT INTO receipt_lines (id, receipt_id, product_id, raw_text, name,"
+                " quantity, unit_price, line_total, is_inventory)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (_uid("rl"), receipt_id, product[0] if product else None,
+                 li["raw_text"], li["name"], li["quantity"], li["unit_price"],
+                 li["line_total"], li["is_inventory"]),
+            )
+    db.commit()
+    db.close()
+    print(f"\n{db_path}: {stats['inserted']} items inserted, {stats['updated']} updated"
+          + (", 1 receipt recorded" if receipt else ""), file=sys.stderr)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="mode", required=True)
@@ -207,6 +294,7 @@ def main():
     v.add_argument("--location", default="pantry-cabinet")
 
     for p in (r, s, v):
+        p.add_argument("--db", type=Path, help="Upsert parsed items into this inventory.db")
         p.add_argument("--csv", type=Path, help="Append parsed items to this items.csv")
         p.add_argument("--source-ref", default=None, help="Provenance tag stored on each row")
 
@@ -231,6 +319,10 @@ def main():
         location, added_via = args.location, "voice"
 
     print(json.dumps(parsed, indent=2))
+    if args.db:
+        write_db(args.db, items, location=location, added_via=added_via,
+                 source_ref=source_ref,
+                 receipt=parsed if args.mode == "receipt" else None)
     if args.csv:
         append_items_csv(items, args.csv, added_via, location, source_ref)
         print(f"\nAppended {len(items)} items to {args.csv}", file=sys.stderr)

@@ -1,104 +1,98 @@
-# Food Inventory — Data Schema v0.1
+# Food Inventory — Data Model v0.2
 
-Designed for Glide tables (Phase 1 of the 6-phase roadmap in the wiki), but
-deliberately app-agnostic so the same shapes work if the backend ever moves.
-Every row is tagged `family_id` from day one, per Lindsey's multi-household
-setup decision.
+Platform-agnostic. The canonical definition is `schema.sql` (SQLite dialect,
+ports to Postgres/Supabase without structural change); this doc explains the
+shape and the decisions. Nothing here assumes Glide or any particular app
+layer — a native app, a web app, or a no-code tool can all sit on top.
 
-## Entities
+## The shape
 
-### Item (the core table — current inventory)
+```
+households ──< locations
+    │
+    ├──< products ──────< items            (stock on hand)
+    │       │
+    │       └──────< receipt_lines >── receipts   (purchase history)
+    │
+categories ──< products (global lookup, carries default shelf life)
+```
 
-One row per thing-in-the-house. This is what the app shows and what "what's
-low / what's expiring" queries run against.
+Six tables. The one structural decision that matters:
 
-| Field | Type | Notes |
-|---|---|---|
-| `item_id` | string | Unique ID (Glide row ID works fine) |
-| `family_id` | string | Household tag — required on every row |
-| `name` | string | Normalized display name ("Barilla Rotini") |
-| `brand` | string | Optional ("Barilla", "H-E-B", "Reggano") |
-| `category` | string | FK → Category (`pantry`, `snacks`, `produce`, …) |
-| `location` | string | FK → Location (`pantry-cabinet`, `fridge`, …) |
-| `quantity` | number | Count or approximate amount |
-| `unit` | string | `count`, `box`, `bag`, `jar`, `can`, `lb`, `oz`, `pct` (pct = "about 50% left") |
-| `status` | enum | `plenty` / `low` / `out` — the field the shopping list is built from |
-| `expiration` | date | From package if visible, else estimated from shelf-life default |
-| `expiration_source` | enum | `label` / `estimated` / `unknown` |
-| `added_via` | enum | `receipt_scan` / `photo_scan` / `voice` / `manual` |
-| `confidence` | enum | `high` / `medium` / `low` — how sure the scanner was; low-confidence rows get surfaced for user review instead of silently trusted |
-| `source_ref` | string | Which scan/dump created it (e.g. `receipt-2026-06-heb`, `photo-2026-07-12-pantry`) |
-| `notes` | string | Free text ("clipped bag, half left") |
-| `updated_at` | datetime | Last touch |
+**Products vs Items.** A *product* is a kind of thing ("Barilla Rotini") — the
+catalog row that barcodes, price history, and recipe matching key against. An
+*item* is stock on hand — that product, in a location, with a quantity and a
+status. Splitting them means:
 
-### PurchaseEvent (receipt history)
+- Buying rotini again doesn't create a duplicate — it bumps the existing
+  item and adds a receipt_line pointing at the same product.
+- Price history falls out of `receipt_lines` joined to `products` for free.
+- Barcode scanning (Phase 2) is just filling in `products.barcode`.
+- Dedup is a database constraint, not app logic: unique index on
+  `(household_id, name COLLATE NOCASE)`.
 
-One row per receipt line item. Feeds price history, budgeting (Phase 6), and
-auto-restock of the Item table ("you bought yogurt again → reset status to
-plenty").
+Everything else is deliberately flat. No separate units table, no inventory
+event log, no user accounts yet — those can be added without reshaping what
+exists.
 
-| Field | Type | Notes |
-|---|---|---|
-| `purchase_id` | string | Unique ID |
-| `family_id` | string | Household tag |
-| `receipt_id` | string | Groups line items from one receipt |
-| `store` | string | "H-E-B", "Costco", "Kroger" |
-| `purchase_date` | date | From receipt when printed, else user-supplied |
-| `raw_text` | string | The literal receipt line ("HEB NAT BNLS SKNLS CHKN B") — keep for parser debugging |
-| `name` | string | Normalized name ("H-E-B Natural Boneless Skinless Chicken Breast") |
-| `quantity` | number | |
-| `unit_price` | number | |
-| `line_total` | number | |
-| `category` | string | FK → Category |
-| `is_inventory` | boolean | False for donations, bag fees, gift cards — excluded from the Item table |
+## Field notes
 
-### Location
+- **`items.status`** (`plenty`/`low`/`out`) is the single field the shopping
+  list is generated from. Voice input maps "almost gone" → `low` and "we're
+  out of" → `out` directly onto it.
+- **`items.confidence` + `items.reviewed`** — scanner output isn't silently
+  trusted. Anything below `high` confidence sits in the `review_queue` view
+  until a human confirms it.
+- **`items.added_via` + `items.source_ref`** — full provenance for every row
+  (`receipt_scan` / `photo_scan` / `voice` / `manual`, plus which scan).
+- **`categories.default_shelf_life_days`** — how estimated expirations get
+  computed when no label date is visible.
+- **`receipt_lines.raw_text`** keeps the literal receipt line ("HEB NAT BNLS
+  SKNLS CHKN B") next to the normalized name, so parser mistakes are
+  debuggable forever.
+- **`household_id` on every domain table** — multi-household is a WHERE
+  clause (or a Postgres RLS policy later), not a rebuild.
 
-Small lookup table the user can edit. Seeded: pantry cabinet, snack cabinet,
-canned-goods cabinet, fridge, freezer, bathroom (toiletries later).
+## The views (the point of the whole app)
 
-### Category
+Defined in `schema.sql`, these are the three queries that solve the
+grocery/meal-planning problem:
 
-Lookup table with a `default_shelf_life_days` column — this is how estimated
-expirations get computed when the package date isn't visible. Seeded values
-are deliberately rough; tighten them as real data comes in.
+| View | Answers |
+|---|---|
+| `shopping_list` | "What do I need to buy?" — items with status `low`/`out` |
+| `expiring_soon` | "What should I use up this week?" — expirations within 7 days |
+| `price_history` | "What do I usually pay for this?" — receipt lines per product |
+| `review_queue` | "What did the scanner guess at?" — unreviewed low/medium-confidence rows |
 
-## How the three input paths converge
+"What can I make with what's on hand" (Phase 4) is recipe data joined against
+`items` — the model already supports it; only the recipe tables are new.
+
+## Input convergence
 
 ```
 receipt photo ─┐
-shelf photo  ──┼──► vision/LLM parse ──► Item rows (+ PurchaseEvent rows for receipts)
-voice dump   ──┘        (same JSON schema for all three)
-manual entry ─────────► Item row directly (Glide form)
+shelf photo  ──┼──► vision/LLM parse ──► upsert products + items
+voice dump   ──┘        (one parser,      (+ receipts/receipt_lines
+manual entry ──────► app form ──────┘       for receipt mode)
 ```
 
-The whole design bet: **every input method produces the same `Item` shape**,
-so the app never cares how a row got there. `added_via` + `confidence` +
-`source_ref` preserve the provenance for review flows.
+All four paths converge on the same upsert (`prototypes/intake.py:upsert_item`):
 
-## Voice dictation flow (the brain-dump path)
+1. Find product by `(household, lower(name))` — create if missing.
+2. Find item by `(product, location)` — update quantity/status in place if it
+   exists, else insert.
+3. Receipt mode also writes the receipt + lines, linked to products by name.
 
-1. User taps a "Brain dump" button → a plain text field with the phone's
-   native keyboard dictation (no audio infra needed for v1 — the OS does
-   speech-to-text for free).
-2. User rambles: *"okay we've got like three boxes of pasta, a jar of peanut
-   butter that's almost gone, two cans of enchilada sauce, we're out of
-   eggs..."*
-3. The transcript goes to the same parser as photos (`intake.py voice`),
-   which returns Item rows — including `status: out` for "we're out of eggs"
-   and `status: low` for "almost gone".
-4. Rows land in a review list; user confirms/edits, then they merge into
-   inventory.
+Fuzzy product matching ("PB" vs "peanut butter") is deferred; the LLM parser
+normalizes names before they hit the database, which covers most of it.
 
-v2 upgrade path: record audio → server-side transcription → same parser.
-Nothing downstream changes, which is the point.
+## Portability
 
-## Dedup/merge rule (keep it simple for v1)
-
-On insert, match on `(family_id, lower(name))`. If a match exists:
-- receipt scan → bump quantity, set `status: plenty`, add PurchaseEvent
-- photo/voice → update quantity/status in place
-- else insert new row
-
-Fuzzy matching ("PB" vs "peanut butter") is a later problem — the parser
-already normalizes names, which gets you most of the way.
+- **SQLite now**: zero infrastructure, single file, works offline, good
+  enough for years of household data.
+- **Postgres/Supabase later**: swap `TEXT` datetime defaults for
+  `timestamptz`, keep everything else. `household_id` columns become RLS
+  policies. Views port as-is.
+- **If a no-code layer (Glide etc.) ever returns**: each table maps to one
+  Glide table; the views become computed columns/filters.
