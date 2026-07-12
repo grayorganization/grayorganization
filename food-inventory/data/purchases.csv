@@ -1,0 +1,14 @@
+purchase_id,family_id,receipt_id,store,purchase_date,raw_text,name,quantity,unit_price,line_total,category,is_inventory
+p001,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,ZEVIA 12PK GNGR ROOT BEER TF,Zevia Ginger Root Beer 12-pack,1,10.98,10.98,beverages,true
+p002,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,GOL SPORT PLNT PRTN VAN 2,Garden of Life Sport Plant Protein Vanilla,2,20.99,41.98,supplements,true
+p003,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,HEB 100 APPLE JUICE 8PK 2 Ea. @ 2.88,H-E-B 100% Apple Juice 8-pack,2,2.88,5.76,beverages,true
+p004,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,BIBIGO MINI WNTN CHCKN &,Bibigo Mini Wontons Chicken & Vegetable,1,5.87,5.87,frozen,true
+p005,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,H-E-B TEX WILDFLOWER HONE,H-E-B Texas Wildflower Honey,1,4.48,4.48,condiments,true
+p006,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,SILK SOYMILK PLAIN 3 Ea. @ 3.97,Silk Soymilk Plain,3,3.97,11.91,dairy,true
+p007,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,AUNTIE ANNES CLASSIC PRET,Auntie Anne's Classic Pretzels (frozen),1,4.64,4.64,frozen,true
+p008,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,SEL BNL SIRLOIN CC STK VP,Select Boneless Sirloin Center-Cut Steak (value pack),1,14.79,14.79,meat,true
+p009,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,HEB NAT BNLS SKNLS CHKN B,H-E-B Natural Boneless Skinless Chicken Breast,1,15.25,15.25,meat,true
+p010,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,HEB GREEK 100 YOG VANILLA,H-E-B Greek 100 Yogurt Vanilla,1,3.48,3.48,dairy,true
+p011,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,HEB GREEK 100 YOG STRAW C,H-E-B Greek 100 Yogurt Strawberry,1,3.48,3.48,dairy,true
+p012,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,G ZERO LEMON LIME 8PK 200,Gatorade Zero Lemon Lime 8-pack 20oz,1,6.98,6.98,beverages,true
+p013,gray-austin,receipt-2026-06-heb,H-E-B,2026-06,CHANGE FOR CHARITY,Change for Charity donation,1,0.92,0.92,,false

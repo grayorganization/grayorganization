@@ -1,0 +1,51 @@
+item_id,family_id,name,brand,category,location,quantity,unit,status,expiration,expiration_source,added_via,confidence,source_ref,notes
+i001,gray-austin,Barilla Rotini,Barilla,pasta-grains,pantry-cabinet,1,box,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,1 lb box
+i002,gray-austin,Reggano Rotini,Reggano,pasta-grains,pantry-cabinet,1,box,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,ALDI brand
+i003,gray-austin,Reggano Angel Hair Pasta,Reggano,pasta-grains,pantry-cabinet,2,box,plenty,,estimated,photo_scan,medium,photo-2026-07-12-pantry,Multiple blue Reggano boxes stacked
+i004,gray-austin,Reggano Oven Ready Lasagna,Reggano,pasta-grains,pantry-cabinet,1,box,plenty,2029-07,label,photo_scan,high,photo-2026-07-12-pantry,Date code Feb 07 29 visible on box
+i005,gray-austin,Maruchan Ramen Beef,Maruchan,pasta-grains,pantry-cabinet,3,count,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,Instant ramen packs
+i006,gray-austin,Express Mac Cups,Cheese Club,pasta-grains,pantry-cabinet,4,count,plenty,,estimated,photo_scan,medium,photo-2026-07-12-pantry,Microwave mac & cheese cups
+i007,gray-austin,Smoked Gouda Macaroni & Cheese,Specially Selected,pasta-grains,pantry-cabinet,2,box,plenty,2027-03,label,photo_scan,high,photo-2026-07-12-pantry,Date code MAR 03 27 visible
+i008,gray-austin,Brown Sugar,,baking,pantry-cabinet,1,bag,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,Opened bag
+i009,gray-austin,Baking Powder,Just About Foods,baking,pantry-cabinet,1,bag,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,8.1 oz no added aluminum
+i010,gray-austin,Cherry Pie Filling,,baking,pantry-cabinet,1,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,
+i011,gray-austin,Seasoning & Mix Packets,,baking,pantry-cabinet,1,bag,plenty,,unknown,photo_scan,low,photo-2026-07-12-pantry,Clear bin: meatloaf mix / onion soup / assorted packets — needs manual review
+i012,gray-austin,Reggano Tomato & Garlic Pasta Sauce,Reggano,condiments,pantry-cabinet,1,jar,plenty,,estimated,photo_scan,high,photo-2026-07-12-pantry,
+i013,gray-austin,BBQ Sauce,,condiments,pantry-cabinet,1,jar,plenty,,estimated,photo_scan,medium,photo-2026-07-12-pantry,Bottle partially visible
+i014,gray-austin,Mustard,,condiments,pantry-cabinet,1,jar,plenty,,estimated,photo_scan,medium,photo-2026-07-12-pantry,
+i015,gray-austin,Dry Goods in Mason Jar,,pasta-grains,pantry-cabinet,1,jar,plenty,,unknown,photo_scan,low,photo-2026-07-12-pantry,Ball jar with grain/seeds — needs manual ID
+i016,gray-austin,Ziploc Gallon Storage Bags,Ziploc,household,pantry-cabinet,1,box,plenty,,unknown,photo_scan,high,photo-2026-07-12-pantry,52 ct plus assorted loose bags
+i017,gray-austin,Crackers,,snacks,pantry-cabinet,1,box,plenty,,estimated,photo_scan,low,photo-2026-07-12-pantry,Box behind mac & cheese — brand unclear
+i018,gray-austin,Diced Tomatoes,Happy Harvest,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
+i019,gray-austin,Baked Beans,Dakota's Pride,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
+i020,gray-austin,Tomato Paste,,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
+i021,gray-austin,Enchilada Sauce,,canned,canned-cabinet,2,can,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,
+i022,gray-austin,Green Beans,,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,medium,photo-2026-07-12-canned,Open can visible — verify
+i023,gray-austin,Canned Peaches,,canned,canned-cabinet,1,can,plenty,,estimated,photo_scan,low,photo-2026-07-12-canned,Partially visible
+i024,gray-austin,Salsa Verde,,condiments,canned-cabinet,1,jar,plenty,,estimated,photo_scan,medium,photo-2026-07-12-canned,Green jar top shelf
+i025,gray-austin,Ashwagandha Gummies,youtheory,supplements,canned-cabinet,1,jar,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,180 gummies mixed berry
+i026,gray-austin,Sport Plant Protein Vanilla,Garden of Life,supplements,canned-cabinet,2,count,plenty,,estimated,photo_scan,high,photo-2026-07-12-canned,Matches receipt purchase of 2 tubs
+i027,gray-austin,Tortilla Chips,,snacks,snack-cabinet,1,bag,low,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Blue bag clipped — partially eaten
+i028,gray-austin,Caramel Snack Mix,,snacks,snack-cabinet,1,bag,low,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Clipped bag top shelf
+i029,gray-austin,Pistachios,,snacks,snack-cabinet,1,bag,plenty,,estimated,photo_scan,high,photo-2026-07-12-snacks,In shell
+i030,gray-austin,Smartfood White Cheddar Popcorn Minis,Smartfood,snacks,snack-cabinet,1,bag,plenty,,estimated,photo_scan,high,photo-2026-07-12-snacks,80-cal multipack
+i031,gray-austin,Cheetos,Cheetos,snacks,snack-cabinet,1,bag,low,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Crumpled bag — mostly gone
+i032,gray-austin,Graham Crackers,,snacks,snack-cabinet,1,box,plenty,,estimated,photo_scan,medium,photo-2026-07-12-snacks,
+i033,gray-austin,Rice Cakes,,snacks,snack-cabinet,2,count,plenty,,estimated,photo_scan,low,photo-2026-07-12-snacks,Orange packs — verify
+i034,gray-austin,Spaghetti,,pasta-grains,snack-cabinet,1,bag,plenty,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Italian-flag packaging
+i035,gray-austin,Salsa (Mild),,condiments,snack-cabinet,1,jar,plenty,,estimated,photo_scan,high,photo-2026-07-12-snacks,
+i036,gray-austin,Bread Loaf,,bread-bakery,snack-cabinet,1,bag,plenty,,estimated,photo_scan,medium,photo-2026-07-12-snacks,Brown bakery bag tied shut
+i037,gray-austin,Bakery Bread (second),,bread-bakery,snack-cabinet,1,bag,plenty,,estimated,photo_scan,low,photo-2026-07-12-snacks,Red/brown paper bag middle shelf — verify contents
+i038,gray-austin,Peanut Butter,,condiments,snack-cabinet,1,jar,plenty,,estimated,photo_scan,high,photo-2026-07-12-snacks,Red-lid jar on its side
+i039,gray-austin,Coffee Filters,,household,snack-cabinet,1,count,plenty,,unknown,photo_scan,high,photo-2026-07-12-snacks,In hanging basket by cabinet
+i040,gray-austin,Zevia Ginger Root Beer 12-pack,Zevia,beverages,pantry-cabinet,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt — confirm location
+i041,gray-austin,H-E-B 100% Apple Juice 8-pack,H-E-B,beverages,fridge,2,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt — confirm location
+i042,gray-austin,Bibigo Mini Wontons Chicken & Vegetable,Bibigo,frozen,freezer,1,bag,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i043,gray-austin,H-E-B Texas Wildflower Honey,H-E-B,condiments,pantry-cabinet,1,jar,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i044,gray-austin,Silk Soymilk Plain,Silk,dairy,fridge,3,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i045,gray-austin,Auntie Anne's Classic Pretzels,Auntie Anne's,frozen,freezer,1,box,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i046,gray-austin,Sirloin Center-Cut Steak,H-E-B,meat,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,Value pack — freeze if not used soon
+i047,gray-austin,Boneless Skinless Chicken Breast,H-E-B,meat,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i048,gray-austin,Greek 100 Yogurt Vanilla,H-E-B,dairy,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i049,gray-austin,Greek 100 Yogurt Strawberry,H-E-B,dairy,fridge,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,From receipt
+i050,gray-austin,Gatorade Zero Lemon Lime 8-pack,Gatorade,beverages,pantry-cabinet,1,count,plenty,,estimated,receipt_scan,high,receipt-2026-06-heb,20 oz bottles — confirm location

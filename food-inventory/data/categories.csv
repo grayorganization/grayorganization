@@ -1,0 +1,15 @@
+category_id,name,default_shelf_life_days,notes
+pasta-grains,Pasta & Grains,540,Dry pasta / rice / ramen
+canned,Canned Goods,720,Cans and jarred shelf-stable
+baking,Baking,365,Flour / sugar / baking powder / mixes
+condiments,Condiments & Sauces,270,Opened jars shorter — refine later
+snacks,Snacks,90,Chips / crackers / popcorn
+bread-bakery,Bread & Bakery,7,Counter bread
+beverages,Beverages,270,Sodas / juice / sports drinks
+dairy,Dairy & Alternatives,14,Yogurt / milk / soymilk (unopened soymilk longer)
+meat,Meat & Seafood,4,Fresh; freeze to extend
+frozen,Frozen,180,Freezer items
+produce,Produce,7,Fruits & vegetables
+supplements,Supplements & Protein,365,Protein powder / gummies
+toiletries,Toiletries,730,Non-food household
+household,Household Supplies,1095,Bags / filters / paper goods
